@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="purple_200">#FFBB86FC</color>
+    <color name="purple_500">#FF6200EE</color>
+    <color name="purple_700">#FF3700B3</color>
+    <color name="teal_200">#FF03DAC5</color>
+    <color name="teal_700">#FF018786</color>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    /* Palette Link:
+    https://coolors.co/palette/306b34-1c5253-f3ffc6-c3eb78-b6174b
+    */
+    <color name="BackgroundYellow">#F3FFC6</color>
+    <color name="ButtonBlue">#1C5253</color>
+    <color name="TexGreen">#C3EB78</color>
+    <color name="CorrectAnswer">#306B34</color>
+    <color name="IncorrectAnswe">#B6174B</color>
+</resources>
