@@ -16,7 +16,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowForward
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
@@ -43,9 +45,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.app.RemoteInput.Source
 import androidx.media3.extractor.mp4.Track
 import com.example.apppreguntas.ui.theme.AppPreguntasTheme
 import com.example.apppreguntas.ui.theme.Preguntas
+import java.util.Random
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -75,7 +79,9 @@ fun BotonContar() {
 
     var actual by remember { mutableStateOf(0) }
 
-    // lista preguntas
+
+
+ // lista preguntas
     var lista = ArrayList<Preguntas>()
     lista.add(
         Preguntas(
@@ -95,7 +101,15 @@ fun BotonContar() {
             "Si, es un zorro preocupado"
         )
     )
-
+    lista.add(
+        Preguntas(
+            "¿Es ese animal un gato?",
+            R.drawable.zorro,
+            false,
+            "No, es un zorrito",
+            "Si, es un zorro preocupado"
+        )
+    )
 
 
 
@@ -106,8 +120,10 @@ fun BotonContar() {
             .background(colorResource(id = R.color.BackgroundYellow))
             .padding(8.dp)
     ) {
-//Cabecera Pregunta
 
+
+
+//Cabecera Pregunta
         Text(
             modifier = Modifier
                 .weight(2f)
@@ -123,21 +139,25 @@ fun BotonContar() {
             color = colorResource(id = R.color.TexGreen)
 
         )
-//Imagen
 
+
+
+//Imagen
         Image(
             painter = painterResource(id = lista.get(actual).imagen),
             contentDescription = "Imagen a identificar",
             contentScale = ContentScale.Crop,
             modifier = Modifier
                 .weight(4f)
-                .size(250.dp)
+                .size(500.dp)
                 .border(5.dp, colorResource(id = R.color.ButtonBlue))
                 .align(CenterHorizontally)
                 .fillMaxSize()
         )
-//Respuesta Pregunta
 
+
+
+//Respuesta Pregunta
         Text(
             modifier = Modifier
                 .weight(2f)
@@ -159,10 +179,9 @@ fun BotonContar() {
             horizontalArrangement = Arrangement.SpaceEvenly
 
         ) {
+
+
 //Boton Verdadero
-
-
-
             TextButton(
                 modifier = Modifier
                     .weight(1f)
@@ -187,15 +206,15 @@ fun BotonContar() {
                     fontSize = 20.sp
                 )
             }
+
+
 //Boton Falso
-
-
             TextButton(
                 modifier = Modifier
                     .weight(1f)
                     .padding(12.dp)
                     .fillMaxSize(),
-                onClick = { //
+                onClick = {
                         textoRespuesta = lista.get(actual).RFalso
                         if (!lista.get(actual).respuesta){
                             colorBotonVerdadero = R.color.IncorrectAnswe
@@ -203,7 +222,7 @@ fun BotonContar() {
                         } else {
                             colorBotonVerdadero = R.color.CorrectAnswer
                             colorBotonFalso = R.color.IncorrectAnswe
-                        }//
+                        }
                           },
                 colors = ButtonDefaults.outlinedButtonColors(colorResource(id = colorBotonFalso))
             ) {
@@ -214,31 +233,111 @@ fun BotonContar() {
                 )
             }
         }
-//Boton Siguiente
-        //
-        TextButton(
+
+        Row(
             modifier = Modifier
-                .fillMaxSize()
-                .padding(12.dp)
+                .fillMaxWidth()
                 .weight(1f),
-            onClick = { actual++
-                        colorBotonVerdadero = R.color.ButtonBlue
-                        colorBotonFalso = R.color.ButtonBlue
-                        textoRespuesta = ""
-            },
-            colors = ButtonDefaults.outlinedButtonColors(colorResource(id = R.color.ButtonBlue)),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceEvenly
+
         ) {
-            Row() {
-                Icon(
-                    Icons.Filled.ArrowForward,
-                    contentDescription = "flecha",
-                    tint = colorResource(id = R.color.BackgroundYellow)
-                )
-                Text(
-                    text = "Siguiente",
-                    color = colorResource(id = R.color.BackgroundYellow),
-                    fontSize = 20.sp
-                )
+
+
+//Boton Anterior
+            TextButton(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(12.dp)
+                    .weight(1f),
+                onClick = {
+                    if (actual == 0) {
+                        actual = lista.lastIndex
+                    } else {
+                        actual--
+                    }
+                    colorBotonVerdadero = R.color.ButtonBlue
+                    colorBotonFalso = R.color.ButtonBlue
+                    textoRespuesta = ""
+                },
+                colors = ButtonDefaults.outlinedButtonColors(colorResource(id = R.color.ButtonBlue)),
+            ) {
+                Row() {
+                    Text(
+                        text = "Anterior  ",
+                        color = colorResource(id = R.color.BackgroundYellow),
+                        fontSize = 20.sp
+                    )
+                    Icon(
+                        Icons.Filled.ArrowBack,
+                        contentDescription = "flecha",
+                        tint = colorResource(id = R.color.BackgroundYellow)
+                    )
+
+                }
+            }
+
+
+//Boton Random
+            TextButton(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(12.dp)
+                    .weight(1f),
+                onClick = {
+                    actual = Random().nextInt(lista.lastIndex + 1)
+
+                    colorBotonVerdadero = R.color.ButtonBlue
+                    colorBotonFalso = R.color.ButtonBlue
+                    textoRespuesta = ""
+                },
+                colors = ButtonDefaults.outlinedButtonColors(colorResource(id = R.color.ButtonBlue)),
+            ) {
+                Row() {
+                    Icon(
+                        painter = painterResource(id = R.drawable.casino),
+                        contentDescription = "Dado",
+                        tint = colorResource(id = R.color.BackgroundYellow)
+                    )
+                    Text(
+                        text = "",
+                        color = colorResource(id = R.color.BackgroundYellow),
+                        fontSize = 20.sp
+                    )
+                }
+            }
+
+
+//Boton Siguiente
+            TextButton(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(12.dp)
+                    .weight(1f),
+                onClick = {
+                    if (lista.lastIndex == actual) {
+                        actual = 0
+                    } else {
+                        actual++
+                    }
+                    colorBotonVerdadero = R.color.ButtonBlue
+                    colorBotonFalso = R.color.ButtonBlue
+                    textoRespuesta = ""
+                },
+                colors = ButtonDefaults.outlinedButtonColors(colorResource(id = R.color.ButtonBlue)),
+            ) {
+                Row() {
+                    Icon(
+                        Icons.Filled.ArrowForward,
+                        contentDescription = "flecha",
+                        tint = colorResource(id = R.color.BackgroundYellow)
+                    )
+                    Text(
+                        text = "  Siguiente",
+                        color = colorResource(id = R.color.BackgroundYellow),
+                        fontSize = 20.sp
+                    )
+                }
             }
         }
     }
