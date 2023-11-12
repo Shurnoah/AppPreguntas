@@ -1,13 +1,12 @@
 package com.example.apppreguntas
 
-import android.content.res.Resources
+import android.media.MediaPlayer
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -19,18 +18,14 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowForward
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -39,18 +34,14 @@ import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Alignment.Companion.CenterEnd
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.app.RemoteInput.Source
-import androidx.media3.extractor.mp4.Track
 import com.example.apppreguntas.ui.theme.AppPreguntasTheme
 import com.example.apppreguntas.ui.theme.Preguntas
 import java.util.Random
@@ -84,10 +75,11 @@ fun BotonContar() {
     var puntuacion by remember {  mutableStateOf(0) }
     var actual by remember { mutableStateOf(0) }
 
-
+    val sonidoIncorrecto = MediaPlayer.create(LocalContext.current,R.raw.incorrectosound)
+    val sonidoCorrecto = MediaPlayer.create(LocalContext.current,R.raw.correctosound)
 
  // lista preguntas
-    var lista = ArrayList<Preguntas>()
+    val lista = ArrayList<Preguntas>()
     lista.add(
         Preguntas(
             "¿Es el 'Oryctolagus cuniculus' un tipo de conejo?",
@@ -167,8 +159,8 @@ fun BotonContar() {
                 .wrapContentSize(Center),
             lineHeight = 40.sp,
             text = if (actual == 0)
-                lista.get(actual).pregunta
-            else lista.get(actual).pregunta,
+                lista[actual].pregunta
+            else lista[actual].pregunta,
 
             textAlign = TextAlign.Center,
             fontSize = 40.sp,
@@ -180,7 +172,7 @@ fun BotonContar() {
 
 //Imagen
         Image(
-            painter = painterResource(id = lista.get(actual).imagen),
+            painter = painterResource(id = lista[actual].imagen),
             contentDescription = "Imagen a identificar",
             contentScale = ContentScale.FillBounds,
             modifier = Modifier
@@ -226,15 +218,18 @@ fun BotonContar() {
                 colors = ButtonDefaults.outlinedButtonColors(colorResource(id =  colorBotonVerdadero)),
 //              enabled = false,
                 onClick = {
-                    textoRespuesta = lista.get(actual).Rverdadero
-                    if (lista.get(actual).respuesta){
+                    textoRespuesta = lista[actual].Rverdadero
+                    if (lista[actual].respuesta){
                         colorBotonVerdadero = R.color.CorrectAnswer
                         colorBotonFalso = R.color.IncorrectAnswe
                         puntuacion++
+                        sonidoCorrecto.start()
+
                     } else {
                         colorBotonVerdadero = R.color.IncorrectAnswe
                         colorBotonFalso = R.color.CorrectAnswer
                         puntuacion--
+                        sonidoIncorrecto.start()
                     }
 //                 botonActivo = false
                 }
@@ -258,15 +253,17 @@ fun BotonContar() {
                 colors = ButtonDefaults.outlinedButtonColors(colorResource(id = colorBotonFalso)),
 //              enabled = botonActivo,
                 onClick = {
-                        textoRespuesta = lista.get(actual).RFalso
-                        if (!lista.get(actual).respuesta){
+                        textoRespuesta = lista[actual].RFalso
+                        if (!lista[actual].respuesta){
                             colorBotonVerdadero = R.color.IncorrectAnswe
                             colorBotonFalso = R.color.CorrectAnswer
                             puntuacion++
+                            sonidoCorrecto.start()
                         } else {
                             colorBotonVerdadero = R.color.CorrectAnswer
                             colorBotonFalso = R.color.IncorrectAnswe
                             puntuacion--
+                            sonidoIncorrecto.start()
                         }
 //                      botonActivo = false
                           },
@@ -391,3 +388,4 @@ fun BotonContar() {
         }
     }
 }
+//este comentario esta para confirmar que se ha actualizado y subido correctamente la ultima version
